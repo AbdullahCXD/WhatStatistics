@@ -16,7 +16,7 @@ presence:
   texts: 
     - Watching {count_apis} Game Servers for statistics
     - Counting how many guilds use this...
-    - Wow! {count_guilds} Guilds use this bot!
+    - Wow! {total_guilds} Guilds use this bot!
   url: null
 
 apis:

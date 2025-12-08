@@ -1,4 +1,5 @@
-import { getPresenceType, ready } from "../../utils";
+import ms from "ms";
+import { getPresenceType, info, ready } from "../../utils";
 import type { Event } from "../event";
 import _ from "lodash"
 
@@ -20,6 +21,8 @@ const ReadyEvent = {
         .replace(/{count_apis}/g, countApis.toString())
         .replace(/{total_guilds}/g, totalGuilds.toString());
 
+      info("Sampled: \"" + processedText + "\" from configuration.")
+
       await client.user.setPresence({
         activities: [
           {
@@ -30,6 +33,12 @@ const ReadyEvent = {
         ],
       });
     };
+
+    await s();
+
+    setInterval(async () => {
+        await s();
+    }, ms("10m"))
 
     ready("Connected to the bot.");
   },
