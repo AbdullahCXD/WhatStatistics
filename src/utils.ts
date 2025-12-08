@@ -2,6 +2,7 @@ import { ActivityType, EmbedBuilder, GuildMember } from "discord.js";
 import type { PresenceType } from "./types";
 import chalk from "chalk";
 import type { WSBot } from "./client";
+import ofig from "figlet";
 
 function getRamUsage(): string {
     const bytes = process.memoryUsage().rss;
@@ -62,6 +63,13 @@ export function error(message: string) {
 export function debug(message: string) {
     if (!process.argv.includes("--debug") && !process.argv.includes("-d")) return;
     console.log(`${chalk.gray("[")} ${chalk.magentaBright("DEBUG")} ${chalk.gray("]")} ${chalk.gray(message)} ${getRam()}`);
+}
+
+export function figlet(text: string) {
+    const fig = (line: string) => console.log(`${chalk.gray("[")} ${chalk.gray("FIG  ")} ${chalk.gray("]")} ${chalk.gray(line)}`);
+    const content = ofig.textSync(text);
+
+    for (const l of content.split("\n")) fig(`   ${l}`);
 }
 
 export function createEmbed(client: WSBot, requestedBy?: GuildMember): EmbedBuilder {
