@@ -4,7 +4,7 @@ import type { WSBot } from "../../client";
 import { createEmbed } from "../../utils";
 
 export default class SupportCommand extends Command {
-    private readonly SUPPORT_SERVER_INVITE = "https://discord.gg/your-server-here";
+    private readonly SUPPORT_SERVER_INVITE = "https://discord.gg/WNhxMbwSXR";
 
     override getCommandInfo(): SlashCommandBuilder {
         return new SlashCommandBuilder()

@@ -7,7 +7,7 @@ import { info } from "../utils";
 import { CommandManager } from "../commands";
 import InteractionEvent from "../events/impl/interaction";
 import { APIManager } from "../apis";
-
+import { VersionChecking } from "../version";
 
 export class WSBot extends Client<true> {
 
@@ -38,6 +38,8 @@ export class WSBot extends Client<true> {
     }
 
     async initialize() {
+        await VersionChecking.checkVersion();
+
         info("Starting initializations.");
 
         info("[1/2] Loading commands.");
