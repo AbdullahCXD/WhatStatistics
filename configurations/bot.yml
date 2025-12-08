@@ -1,0 +1,24 @@
+##########################################################################
+#
+#     __        __  ____  
+#     \ \      / / / ___| 
+#      \ \ /\ / /  \___ \       - WhatStatistics Configuration
+#       \ V  V /    ___) |      - Version 1.0.0
+#        \_/\_/    |____/ 
+#
+#
+##########################################################################
+                    
+config-version: 1
+
+presence:
+  type: Watching
+  text: Watching {count_apis} Game Servers for statistics
+  url: null
+
+apis:
+  hypixel: false
+  pika-network: true
+  jartex-network: true
+
+  # Add more API's here, follow the WIKI for this.
