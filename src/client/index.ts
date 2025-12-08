@@ -16,7 +16,9 @@ export class WSBot extends Client<true> {
         apis: {},
         presence: {
             type: "Watching",
-            text: "Watching {count_apis} Game Servers for statistics",
+            texts: [
+                "Watching {count_apis} Game Servers for statistics"
+            ],
             url: undefined
         }
     });

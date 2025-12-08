@@ -13,7 +13,10 @@ config-version: 1
 
 presence:
   type: Watching
-  text: Watching {count_apis} Game Servers for statistics
+  texts: 
+    - Watching {count_apis} Game Servers for statistics
+    - Counting how many guilds use this...
+    - Wow! {count_guilds} Guilds use this bot!
   url: null
 
 apis:

@@ -7,7 +7,7 @@ export interface WSConfig {
 
     presence: {
         type: PresenceType;
-        text: string;
+        texts: string[];
         url: string | undefined;
     }
 

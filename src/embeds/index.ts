@@ -12,6 +12,10 @@ export class EmbedConverter {
     ): EmbedBuilder {
         const embed = createEmbed(client);
 
+        if (!mode) return embed
+                    .setTitle("❌ Unknown Game Mode")
+                    .setDescription("This game mode is not supported yet. Believe this is an error? Contact the support at </support:1447275255617032348>");
+
         switch (mode.type) {
             case "Global":
                 return this.convertGlobalEmbed(embed, mode as GlobalMode, server);
@@ -24,7 +28,7 @@ export class EmbedConverter {
             default:
                 return embed
                     .setTitle("❌ Unknown Game Mode")
-                    .setDescription("This game mode is not supported yet.");
+                    .setDescription("This game mode is not supported yet. Believe this is an error? Contact the support at </support:1447275255617032348>");
         }
     }
 
