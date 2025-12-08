@@ -1,4 +1,8 @@
-# WS - WhatStatistics
+<p align="center">
+  <img width="680" height="240" alt="What" src="https://github.com/user-attachments/assets/7f213076-ab29-43ae-aed4-124c2db7b997" />
+</p>
+
+<h1 align="center">WS - WhatStatistics</h1>
 
 WS is a Discord bot written entirely in TypeScript with Discord.js and Bun.js. Used to connect between Minecraft Servers like Hypixel, Pika-Network and so on to show statistics about players and about the server.
 
