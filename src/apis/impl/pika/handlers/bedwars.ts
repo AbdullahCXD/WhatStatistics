@@ -1,5 +1,4 @@
 import { safeParse } from "../../../../utils";
-import Pika from "craftigames.js";
 import type { BedwarsMode } from "../../../../types";
 import { PikaGameMode, type PikaNetwork } from "../../../../libraries/craftigames";
 
