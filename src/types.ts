@@ -99,11 +99,12 @@ export type GlobalMode = GameModeStatistics<"Global", {
 
 export type EventCallback<T extends keyof ClientEvents> = (client: WSBot, ...args: ClientEvents[T]) => Promised<void>
 export type WSServer = "hypixel" | "pika-network" | "jartex-network";
-export const WSServerArray: WSServer[] = [
-    "hypixel",
-    "jartex-network",
-    "pika-network"
-];
+export const WSServerArray: Record<string, WSServer> = {
+    "Hypixel": "hypixel",
+    "Jartex Network": "jartex-network",
+    "Pika Network": "pika-network"
+};
+
 export const WSGameModeArray: GameMode[] = [
     "Bedwars",
     "Global",

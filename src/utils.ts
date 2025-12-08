@@ -79,3 +79,10 @@ export function safeParse(entry?: { value?: string }): number {
     const parsed = parseInt(entry.value);
     return isNaN(parsed) ? 0 : parsed;
 }
+
+export function createCommandLink(name: string, id: string) {
+    return `</${name}:${id}>`
+}
+
+export const SUPPORT_COMMAND_LINK = createCommandLink("support", "1447275255617032348");
+export const STATISTICS_COMMAND_LINK = createCommandLink("statistics", "1447290047450583111");

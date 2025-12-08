@@ -17,6 +17,8 @@ presence:
     - Watching {count_apis} Game Servers for statistics
     - Counting how many guilds use this...
     - Wow! {total_guilds} Guilds use this bot!
+    - Use /statistics for statistics.
+    - Wanna know the servers we support? /servers
   url: null
 
 apis:

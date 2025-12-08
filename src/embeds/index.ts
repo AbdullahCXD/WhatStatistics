@@ -1,7 +1,7 @@
 import { EmbedBuilder } from "discord.js";
 import type { WSBot } from "../client";
-import type { GlobalMode, BedwarsMode, SkyWarsMode, SkyBlockMode, GameMode, GameModeStatistics } from "../types";
-import { createEmbed } from "../utils";
+import { type GlobalMode, type BedwarsMode, type SkyWarsMode, type SkyBlockMode, type GameMode, type GameModeStatistics, WSServerArray } from "../types";
+import { createEmbed, SUPPORT_COMMAND_LINK } from "../utils";
 
 export class EmbedConverter {
     
@@ -11,34 +11,35 @@ export class EmbedConverter {
         server: string
     ): EmbedBuilder {
         const embed = createEmbed(client);
+        const [displayName] = Object.entries(WSServerArray).find(([n, v]) => v === server)!;
 
         if (!mode) return embed
                     .setTitle("❌ Unknown Game Mode")
-                    .setDescription("This game mode is not supported yet. Believe this is an error? Contact the support at </support:1447275255617032348>");
+                    .setDescription("This game mode is not supported yet. Believe this is an error? Contact the support at " + SUPPORT_COMMAND_LINK);
 
         switch (mode.type) {
             case "Global":
-                return this.convertGlobalEmbed(embed, mode as GlobalMode, server);
+                return this.convertGlobalEmbed(embed, mode as GlobalMode, server, displayName);
             case "Bedwars":
-                return this.convertBedwarsEmbed(embed, mode as BedwarsMode, server);
+                return this.convertBedwarsEmbed(embed, mode as BedwarsMode, server, displayName);
             case "SkyWars":
-                return this.convertSkyWarsEmbed(embed, mode as SkyWarsMode, server);
+                return this.convertSkyWarsEmbed(embed, mode as SkyWarsMode, server, displayName);
             case "SkyBlock":
-                return this.convertSkyBlockEmbed(embed, mode as SkyBlockMode, server);
+                return this.convertSkyBlockEmbed(embed, mode as SkyBlockMode, server, displayName);
             default:
                 return embed
                     .setTitle("❌ Unknown Game Mode")
-                    .setDescription("This game mode is not supported yet. Believe this is an error? Contact the support at </support:1447275255617032348>");
+                    .setDescription("This game mode is not supported yet. Believe this is an error? Contact the support at " + SUPPORT_COMMAND_LINK);
         }
     }
 
-    private static convertGlobalEmbed(embed: EmbedBuilder, mode: GlobalMode, server: string): EmbedBuilder {
+    private static convertGlobalEmbed(embed: EmbedBuilder, mode: GlobalMode, server: string, display: string): EmbedBuilder {
         const rankNames = mode.ranks.map(r => r.displayName).join(", ") || "None";
         const statusEmoji = mode.last_seen > Date.now() - 300000 ? "🟢" : "🔴";
         
         embed
             .setTitle(`📊 Global Statistics - ${mode.username}`)
-            .setDescription(`**Server:** \`${server}\`\n**Status:** ${statusEmoji} ${mode.last_seen > Date.now() - 300000 ? "Online" : "Offline"}`)
+            .setDescription(`**Server:** \`${display}\`\n**Status:** ${statusEmoji} ${mode.last_seen > Date.now() - 300000 ? "Online" : "Offline"}`)
             .addFields(
                 {
                     name: "👤 Profile Information",
@@ -80,7 +81,7 @@ export class EmbedConverter {
         return embed;
     }
 
-    private static convertBedwarsEmbed(embed: EmbedBuilder, mode: BedwarsMode, server: string): EmbedBuilder {
+    private static convertBedwarsEmbed(embed: EmbedBuilder, mode: BedwarsMode, server: string, display: string): EmbedBuilder {
         const kdr = mode.deaths > 0 ? (mode.kills / mode.deaths).toFixed(2) : mode.kills.toFixed(2);
         const fkdr = mode.finals.deathes > 0 ? (mode.finals.kills / mode.finals.deathes).toFixed(2) : mode.finals.kills.toFixed(2);
         const wlr = mode.losses > 0 ? (mode.wins / mode.losses).toFixed(2) : mode.wins.toFixed(2);
@@ -88,7 +89,7 @@ export class EmbedConverter {
 
         embed
             .setTitle("🛏️ BedWars Statistics")
-            .setDescription(`**Server:** \`${server}\``)
+            .setDescription(`**Server:** \`${display}\``)
             .addFields(
                 {
                     name: "⚔️ Combat Stats",
@@ -136,10 +137,10 @@ export class EmbedConverter {
         return embed;
     }
 
-    private static convertSkyWarsEmbed(embed: EmbedBuilder, mode: SkyWarsMode, server: string): EmbedBuilder {
+    private static convertSkyWarsEmbed(embed: EmbedBuilder, mode: SkyWarsMode, server: string, display: string): EmbedBuilder {
         embed
             .setTitle("☁️ SkyWars Statistics")
-            .setDescription(`**Server:** \`${server}\`\n\n*Statistics coming soon...*`)
+            .setDescription(`**Server:** \`${display}\`\n\n*Statistics coming soon...*`)
             .addFields({
                 name: "🚧 Under Development",
                 value: "SkyWars statistics are currently being implemented. Check back soon!",
@@ -149,10 +150,10 @@ export class EmbedConverter {
         return embed;
     }
 
-    private static convertSkyBlockEmbed(embed: EmbedBuilder, mode: SkyBlockMode, server: string): EmbedBuilder {
+    private static convertSkyBlockEmbed(embed: EmbedBuilder, mode: SkyBlockMode, server: string, display: string): EmbedBuilder {
         embed
             .setTitle("🏝️ SkyBlock Statistics")
-            .setDescription(`**Server:** \`${server}\`\n\n*Statistics coming soon...*`)
+            .setDescription(`**Server:** \`${display}\`\n\n*Statistics coming soon...*`)
             .addFields({
                 name: "🚧 Under Development",
                 value: "SkyBlock statistics are currently being implemented. Check back soon!",

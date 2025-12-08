@@ -2,9 +2,9 @@ import { Collection } from "discord.js";
 import type { WSAPI } from "./api";
 import type { WSBot } from "../client";
 import type { GameMode, GameModeStatistics, WSServer } from "../types";
-import PikaNetworkAPI from "./impl/pika";
+import PikaNetworkAPI from "./impl/pika/pika";
 import { info } from "../utils";
-import JartexNetworkAPI from "./impl/jartex";
+import JartexNetworkAPI from "./impl/jartex/jartex";
 
 export class APIManager {
 
