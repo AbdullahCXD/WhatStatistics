@@ -13,4 +13,4 @@ topgg:
   enabled: true
   port: 8080
   webhookPath: "/botapi/vote"
-  webhookAuth: "X3r76N,A@I*0"
+  webhookAuth: ""
