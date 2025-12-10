@@ -94,7 +94,6 @@ export class TopGGServer {
             return;
           }
 
-          // Try to send DM
           try {
             await user.send({
               embeds: [this.voteEmbed],
