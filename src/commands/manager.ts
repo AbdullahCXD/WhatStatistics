@@ -121,28 +121,8 @@ export class CommandManager {
             
             return result;
         } catch (err) {
-            error(`Error executing command "${commandName}": ${err}`);
-            
-            // Attempt to notify the user
-            try {
-                const embed = createEmbed(this.client, interaction.member)
-                    .setTitle("Command Error")
-                    .setDescription("An error occurred while executing this command.");
-                
-                if (interaction.replied || interaction.deferred) {
-                    await interaction.followUp({
-                        embeds: [embed],
-                        ephemeral: true
-                    });
-                } else {
-                    await interaction.reply({
-                        embeds: [embed],
-                        ephemeral: true
-                    });
-                }
-            } catch (replyErr) {
-                error(`Failed to send error message to user: ${replyErr}`);
-            }
+            error(`Error executing command "${commandName}"`);
+            error((err as Error))
 
             return false;
         }

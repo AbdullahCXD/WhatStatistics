@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandStringOption, type APIApplicationCommandOptionChoice, type SlashCommandOptionsOnlyBuilder } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandStringOption, SlashCommandBooleanOption, type APIApplicationCommandOptionChoice, type SlashCommandOptionsOnlyBuilder } from "discord.js";
 import { Command } from "../command";
 import { WSGameModeArray, WSServerArray, type GameMode, type WSServer } from "../../types";
 import type { WSBot } from "../../client";
@@ -6,8 +6,9 @@ import { Statistics } from "../../statistics";
 import { EmbedConverter } from "../../embeds";
 import { Workers } from "../../workers";
 import { createEmbed } from "../../utils";
+import { CanvasStatsGenerator } from "../../canvas";
 
-export default class StatisticsCommand extends Command {
+export class StatisticsCommand extends Command {
 
     override getCommandInfo(): SlashCommandOptionsOnlyBuilder {
         return new SlashCommandBuilder()
@@ -36,7 +37,12 @@ export default class StatisticsCommand extends Command {
                     .setName("username")
                     .setDescription("Your ingame Minecraft username.")
                     .setRequired(true)
-                    
+            )
+            .addBooleanOption(
+                new SlashCommandBooleanOption()
+                    .setName("canvas")
+                    .setDescription("Use canvas-based image statistics (default: true)")
+                    .setRequired(false)
             )
     }
 
@@ -45,6 +51,7 @@ export default class StatisticsCommand extends Command {
         const server = interaction.options.getString("server", true) as WSServer;
         const gamemode = interaction.options.getString("gamemode", true) as GameMode;
         const username = interaction.options.getString("username", true);
+        const useCanvas = interaction.options.getBoolean("canvas") ?? true; // Default to true
         const [displayName] = Object.entries(WSServerArray).find(([n, v]) => v === server)!;
 
         await Workers.create(client, interaction)
@@ -56,9 +63,15 @@ export default class StatisticsCommand extends Command {
             .addJob(async () => {
                 return await Statistics.getStatistics(client, gamemode, username, server);
             })
-            .executeAndDisplay((result) => 
-                EmbedConverter.convertStatisticsEmbed(client, result, server)
-            );
+            .executeAndDisplay(async (result) => {
+                if (useCanvas) {
+                    const attachment = await EmbedConverter.convertStatisticsImage(client, result, server);
+                    return attachment
+                } else {
+                    const embed = EmbedConverter.convertStatisticsEmbed(client, result, server);
+                    return embed;
+                }
+            });
 
         return true;
     }

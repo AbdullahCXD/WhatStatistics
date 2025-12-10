@@ -8,6 +8,7 @@ import { CommandManager } from "../commands";
 import InteractionEvent from "../events/impl/interaction";
 import { APIManager } from "../apis";
 import { VersionChecking } from "../version";
+import { TopGGServer } from "../topgg";
 
 export class WSBot extends Client<true> {
 
@@ -25,6 +26,7 @@ export class WSBot extends Client<true> {
 
     public commands = new CommandManager(this);
     public apis = new APIManager(this);
+    public topgg!: TopGGServer
 
     constructor() {
         super({
@@ -47,7 +49,7 @@ export class WSBot extends Client<true> {
         info("[1/2] Loading commands.");
         await this.commands.loadCommands();
         
-        info("[2/2] Loading events.");
+        info("[2/3] Loading events.");
         this.registerEvent(ReadyEvent);
         this.registerEvent(InteractionEvent);
     }

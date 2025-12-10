@@ -2,6 +2,7 @@ import ms from "ms";
 import { getPresenceType, info, ready } from "../../utils";
 import type { Event } from "../event";
 import _ from "lodash"
+import { TopGGServer } from "../../topgg";
 
 const ReadyEvent = {
   name: "clientReady",
@@ -39,6 +40,11 @@ const ReadyEvent = {
     setInterval(async () => {
         await s();
     }, ms("10m"))
+
+    info("Connecting Top.gg server...");
+    client.topgg = new TopGGServer(client);
+    await client.topgg.start()
+
 
     ready("Connected to the bot.");
   },

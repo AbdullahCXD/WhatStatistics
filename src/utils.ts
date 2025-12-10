@@ -56,8 +56,13 @@ export function warn(message: string) {
     console.log(`${chalk.gray("[")} ${chalk.yellowBright("WARN ")} ${chalk.gray("]")} ${chalk.gray(message)} ${getRam()}`);
 }
 
-export function error(message: string) {
-    console.log(`${chalk.gray("[")} ${chalk.redBright("ERROR")} ${chalk.gray("]")} ${chalk.gray(message)} ${getRam()}`);
+export function error(message: string | Error) {
+    if (message instanceof Error) {
+      console.log(`${chalk.gray("[")} ${chalk.redBright("ERROR")} ${chalk.gray("]")} ${chalk.gray(message)}`);
+      console.log(message);
+    } else {
+      console.log(`${chalk.gray("[")} ${chalk.redBright("ERROR")} ${chalk.gray("]")} ${chalk.gray(message)} ${getRam()}`);
+    }
 }
 
 export function debug(message: string) {

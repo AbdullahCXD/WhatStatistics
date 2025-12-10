@@ -1,4 +1,4 @@
-import type { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
+import type { ChatInputCommandInteraction, EmbedBuilder, AttachmentBuilder } from "discord.js";
 import type { WSBot } from "../client";
 import { createEmbed } from "../utils";
 
@@ -50,13 +50,13 @@ export class Workers {
             throw new Error("No jobs added to worker queue");
         }
 
-        // Show the working embed
-        await this.interaction.reply({
-            embeds: [this.workingEmbed],
-            flags: [
-                "Ephemeral"
-            ]
-        });
+        // Show the working embed only if not already replied
+        if (!this.interaction.replied && !this.interaction.deferred) {
+            await this.interaction.reply({
+                embeds: [this.workingEmbed],
+                flags: ["Ephemeral"]
+            });
+        }
 
         let lastResult: any = null;
 
@@ -77,9 +77,12 @@ export class Workers {
                             inline: false
                         });
 
-                    await this.interaction.editReply({
-                        embeds: [progressEmbed]
-                    });
+                    // Only update if interaction has been acknowledged
+                    if (this.interaction.replied || this.interaction.deferred) {
+                        await this.interaction.editReply({
+                            embeds: [progressEmbed]
+                        });
+                    }
                 }
             }
 
@@ -89,9 +92,12 @@ export class Workers {
                 .setTitle("❌ Error")
                 .setDescription(`An error occurred while processing: ${error instanceof Error ? error.message : "Unknown error"}`);
 
-            await this.interaction.editReply({
-                embeds: [errorEmbed]
-            });
+            // Only update if interaction has been acknowledged
+            if (this.interaction.replied || this.interaction.deferred) {
+                await this.interaction.editReply({
+                    embeds: [errorEmbed]
+                });
+            }
 
             throw error;
         }
@@ -99,18 +105,41 @@ export class Workers {
 
     /**
      * Execute all jobs and automatically display the result
+     * Supports both EmbedBuilder and AttachmentBuilder (for canvas images)
      */
-    async executeAndDisplay(resultEmbed: EmbedBuilder | ((result: any) => EmbedBuilder)): Promise<void> {
+    async executeAndDisplay(
+        resultEmbed: EmbedBuilder | AttachmentBuilder | ((result: any) => EmbedBuilder | AttachmentBuilder | Promise<EmbedBuilder | AttachmentBuilder>)
+    ): Promise<void> {
         try {
             const result = await this.execute();
 
-            const finalEmbed = typeof resultEmbed === "function" 
-                ? resultEmbed(result) 
-                : resultEmbed;
+            let finalResult: EmbedBuilder | AttachmentBuilder;
+            
+            if (typeof resultEmbed === "function") {
+                const functionResult = resultEmbed(result);
+                // Handle async function results
+                finalResult = functionResult instanceof Promise ? await functionResult : functionResult;
+            } else {
+                finalResult = resultEmbed;
+            }
 
-            await this.interaction.editReply({
-                embeds: [finalEmbed]
-            });
+            // Only update if interaction has been acknowledged
+            if (!this.interaction.replied && !this.interaction.deferred) {
+                return;
+            }
+
+            // Check if it's an AttachmentBuilder (canvas image)
+            if (finalResult && 'attachment' in finalResult && 'name' in finalResult) {
+                await this.interaction.editReply({
+                    embeds: [],
+                    files: [finalResult as AttachmentBuilder]
+                });
+            } else {
+                // It's an EmbedBuilder
+                await this.interaction.editReply({
+                    embeds: [finalResult as EmbedBuilder]
+                });
+            }
         } catch (err) {
             // Error already handled in execute(), just rethrow
             throw err;
@@ -120,9 +149,15 @@ export class Workers {
     /**
      * Execute all jobs and display result using a custom handler
      */
-    async executeWithHandler<T = any>(handler: (result: T, interaction: ChatInputCommandInteraction<"cached">) => Promise<void>): Promise<void> {
+    async executeWithHandler<T = any>(
+        handler: (result: T, interaction: ChatInputCommandInteraction<"cached">) => Promise<void>
+    ): Promise<void> {
         const result = await this.execute<T>();
-        await handler(result!, this.interaction);
+        
+        // Only call handler if we have a valid result
+        if (result !== null) {
+            await handler(result, this.interaction);
+        }
     }
 
     /**
